@@ -3,42 +3,83 @@ import { test, expect } from '@playwright/test';
 import { Server } from '../sites/domain';
 import { SmsSite } from '../sites/sms centre';
 const server = new Server()
+import { Mokkano } from '../sites/mokkano/underDomains';
+const mokkano = new Mokkano()
 
-server.domains.forEach(element => {
-  test (`Test pop-up autorization ${element.domain}`, async ({page, context}) => {
-    // Going to a domain
-    await page.goto(Server.protocol + element.domain);
-    //если поп-ап выбор адреса
-    const adressPopAp = expect (page.locator("//div[@class='modal-arora-content modal-address-selector-popup']"));
-    if (!adressPopAp) { 
-      console.log("pass");
-      await page.evaluate(() => sessionStorage.setItem('address-popup-seen-at-entrance','true'));
-      await page.evaluate(()=> sessionStorage.setItem('show_unavaliable_terminal_message','true'));
-      await page.reload();
-      await page.waitForTimeout(1000);
-    } else {
-        console.log("sms");
-        await page.click('.v-login-button-text'); // Open pop-up LogIn
-        // проверка формы с паролем или нет
-        const inputPassword = expect (page.locator("//div[@class='v-login-input-label'][contains(.,'Пароль')]"));
-        //аутентифиуация по смс
-        if (inputPassword) {
-            console.log("step1");
-            await page.locator("//input[@placeholder='(   )    -  -  ']").fill('9991234567');
-            await page.locator("//button[@class='v-login-button v-login-border'][contains(.,'Запросить код')]").click();
-            await page.locator("//input[@class='v-login-input v-login-input-no-limit']").fill(''); //тут нужно дописать открытие нового браузера devino
-            await page.locator("//div[@class='v-login-button-action-wrapper v-mb-small']//button[@class='v-login-button']").click();
-        } else {
-            //аутентифиуация по паролю
-            console.log('step2');
-            await page.locator("//input[@placeholder='(   )    -  -  ']").fill("9991234567")
-            await page.locator("//input[@class='v-form-control v-login-input']")
-            await page.locator("xpath = (//i[@class='fal fa-times'])").click();
-          }
-      }
-  });
-});
+// проверка авторизации
+// server.domains.forEach(element => {
+//   test (`Test pop-up autorization ${element.domain}`, async ({page, context}) => {
+//     // Going to a domain
+//     await page.goto(Server.protocol + element.domain);
+//     //если поп-ап выбор адреса
+//     const adressPopAp = expect (page.locator("//div[@class='modal-arora-content modal-address-selector-popup']"));
+//     if (!adressPopAp) { 
+//       console.log("pass");
+//       await page.evaluate(() => sessionStorage.setItem('address-popup-seen-at-entrance','true'));
+//       await page.evaluate(()=> sessionStorage.setItem('show_unavaliable_terminal_message','true'));
+//       await page.reload();
+//       await page.waitForTimeout(1000);
+//     } else {
+//         console.log("sms");
+//         await page.click('.v-login-button-text'); // Open pop-up LogIn
+//         // проверка формы с паролем или нет
+//         const inputPassword = expect (page.locator("//div[@class='v-login-input-label'][contains(.,'Пароль')]"));
+//         //аутентифиуация по смс
+//         if (inputPassword) {
+//             console.log("step1");
+//             await page.locator("//input[@placeholder='(   )    -  -  ']").fill('9991234567');
+//             await page.locator("//button[@class='v-login-button v-login-border'][contains(.,'Запросить код')]").click();
+//             await page.locator("//input[@class='v-login-input v-login-input-no-limit']").fill(''); //тут нужно дописать открытие нового браузера devino
+//             await page.locator("//div[@class='v-login-button-action-wrapper v-mb-small']//button[@class='v-login-button']").click();
+//         } else {
+//             //аутентифиуация по паролю
+//             console.log('step2');
+//             await page.locator("//input[@placeholder='(   )    -  -  ']").fill("9991234567")
+//             await page.locator("//input[@class='v-form-control v-login-input']")
+//             await page.locator("xpath = (//i[@class='fal fa-times'])").click();
+//           }
+//       }
+//   });
+// });
 
+
+// Проверка заказов самовывоз Моккано
+mokkano.underDomains.forEach(element => {
+  test (`shop in Mokkano  ${element.uri}`, async({page, context}) => {
+    await page.goto('https://' + element.uri)
+    await page.evaluate(()=> localStorage.setItem('city-popup-seen-at-entrance', 'true'))
+    await page.reload();
+
+    // переход в меню и добавление товара в корзину
+    await page.locator("//a[@class='px-2 py-sm-2 pl-sm-0 pr-sm-4'][contains(.,'Дополнительно')]").click()
+    await page.locator("(//span[contains(.,'В корзину')])[1]").click()
+    await page.locator("//button[@class='v-small-basket-button v-btn v-small-basket-button-header v-custom v-ripple-button']").click()
+    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    await page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[1]").fill('Test')
+    await page.waitForTimeout(1000)
+    await page.locator("//input[contains(@data-maska,'+7 (###) ###-##-##')]").fill("7777777777")
+    await page.waitForTimeout(1000)
+    await page.locator("//label[@class='toggle-switcher-label'][contains(.,'Самовывоз')]").click()
+    await page.locator("(//div[contains(@class,'v-self-service-terminal-item')])[1]").click()
+    await page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[6]").fill('Не готовить, тестовый заказ!')
+    await page.waitForTimeout(1000)
+    // await page.locator("//label[@class='toggle-switcher-label'][contains(.,'Ко времени')]").click()
+    // await page.locator("//select[contains(@class,'v-day-select v-form-control')]").click()
+    await page.locator("//span[contains(.,'Оформить заказ')]").click()
+    await page.waitForLoadState('domcontentloaded');
+    await page.waitForTimeout(3000)
+    
+  })
+}) 
   
 // server.domains.forEach(element => {
 
@@ -166,4 +207,6 @@ server.domains.forEach(element => {
 // //   const addresPickup = await page.locator("//div[contains(@class,'v-self-service-terminal-item selected')]").innerText();
 // //   let arr = addresPickup.split(' ');
 // //   let nameStreet = arr[1];
-// //   await page.locator("xpath = (//input[@class='v-form-control v-mb-small'])[4]" || "xpath = (//input[contains(@type,'text')])[5]" || "xpath = (//input[contains(@type,'text')])[9]" || "xpaty = (//input[contains(@type,'text')])[10]").fill(nameStreet);
+//   await page.locator("xpath = (//input[@class='v-form-control v-mb-small'])[4]" || "xpath = (//input[contains(@type,'text')])[5]" || "xpath = (//input[contains(@type,'text')])[9]" || "xpaty = (//input[contains(@type,'text')])[10]").fill(nameStreet);
+
+
