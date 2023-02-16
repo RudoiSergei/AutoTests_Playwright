@@ -5,6 +5,7 @@ import { SmsSite } from '../sites/sms centre';
 const server = new Server()
 import { Mokkano } from '../sites/mokkano/underDomains';
 const mokkano = new Mokkano()
+export const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 
 // проверка авторизации
 // server.domains.forEach(element => {
@@ -54,30 +55,47 @@ mokkano.underDomains.forEach(element => {
     await page.locator("//a[@class='px-2 py-sm-2 pl-sm-0 pr-sm-4'][contains(.,'Дополнительно')]").click()
     await page.locator("(//span[contains(.,'В корзину')])[1]").click()
     await page.locator("//button[@class='v-small-basket-button v-btn v-small-basket-button-header v-custom v-ripple-button']").click()
-    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    await page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[1]").fill('Test')
-    await page.waitForTimeout(1000)
-    await page.locator("//input[contains(@data-maska,'+7 (###) ###-##-##')]").fill("7777777777")
-    await page.waitForTimeout(1000)
+    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
+    // await expect(page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[1]")).toBeVisible({ timeout: 2000 })
+    const nameUser = "TECT"
+    const phoneUser = "77777777777"
+    const commentUser = "Не готовить, тестовый заказ!"
+
+    await page.waitForTimeout(2000)    
+    await page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[1]").type(nameUser)
+    await page.waitForTimeout(2000)    
+    await expect(page.locator("//input[contains(@data-maska,'+7 (###) ###-##-##')]")).toBeVisible({ timeout: 2000 })
+    await page.locator("//input[contains(@data-maska,'+7 (###) ###-##-##')]").type(phoneUser)
+    await page.waitForTimeout(1000)    
     await page.locator("//label[@class='toggle-switcher-label'][contains(.,'Самовывоз')]").click()
     await page.locator("(//div[contains(@class,'v-self-service-terminal-item')])[1]").click()
-    await page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[6]").fill('Не готовить, тестовый заказ!')
-    await page.waitForTimeout(1000)
+    await page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[6]").click()
+    await expect(page.locator('//*[@id="AsyncComponentWrapper.CartStepBlock.AsyncComponentWrapper.CartOrderTypeBlock.AsyncComponentWrapper.CartSelfServiceTerminals.AsyncComponentWrapper.CartCommentcomment"]/input')).toBeVisible({ timeout: 2000 })
+    await page.waitForTimeout(2000)    
+    await page.locator("//div[@id='AsyncComponentWrapper.CartStepBlock.AsyncComponentWrapper.CartOrderTypeBlock.AsyncComponentWrapper.CartSelfServiceTerminals.AsyncComponentWrapper.CartCommentcomment']//input[@class='v-form-control v-mb-small']").fill(commentUser)    
     // await page.locator("//label[@class='toggle-switcher-label'][contains(.,'Ко времени')]").click()
     // await page.locator("//select[contains(@class,'v-day-select v-form-control')]").click()
-    await page.locator("//span[contains(.,'Оформить заказ')]").click()
-    await page.waitForLoadState('domcontentloaded');
-    await page.waitForTimeout(3000)
-    
+    // await page.locator("//select[contains(@class,'v-day-select v-form-control')]").selectOption({ index: 1 })
+    // await page.locator("//select[contains(@class,'v-hour-select v-form-control')]").selectOption({index: 1})
+    // await page.locator("//select[@class='v-minute-select v-form-control']").selectOption({index: 1})
+    await page.waitForTimeout(1000)    
+    await page.locator("//div[@class='v-payment-wrapper'][contains(.,'Картой при получении')]").click()
+    await page.waitForTimeout(1000)    
+      // await page.locator("//span[contains(.,'Оформить заказ')]").click()
+      
+      await page.waitForTimeout(10000)
+      const url =  element.uri
+      await page.screenshot({ path: `Screenshot/${url}.png`, fullPage: true });
+      await page.waitForLoadState('domcontentloaded');
   })
 }) 
   
