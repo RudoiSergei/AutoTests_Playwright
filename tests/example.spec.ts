@@ -5,8 +5,10 @@ import { SmsSite } from '../sites/sms centre';
 const server = new Server()
 import { Mokkano } from '../sites/mokkano/underDomains';
 const mokkano = new Mokkano()
-export const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-
+// export const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+export async function sleep (ms: number) {
+  return new Promise(r => setTimeout(r, ms));
+}
 // проверка авторизации
 // server.domains.forEach(element => {
 //   test (`Test pop-up autorization ${element.domain}`, async ({page, context}) => {
@@ -50,7 +52,7 @@ mokkano.underDomains.forEach(element => {
     await page.goto('https://' + element.uri)
     await page.evaluate(()=> localStorage.setItem('city-popup-seen-at-entrance', 'true'))
     await page.reload();
-
+    // await sleep(10000)
     // переход в меню и добавление товара в корзину
     await page.locator("//a[@class='px-2 py-sm-2 pl-sm-0 pr-sm-4'][contains(.,'Дополнительно')]").click()
     await page.locator("(//span[contains(.,'В корзину')])[1]").click()
