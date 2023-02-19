@@ -1,8 +1,8 @@
 export class Mokkano {
     public underDomains = [
-        // {
-        //     uri: "mokkano.ru"
-        // },
+        {
+            uri: "mokkano.ru"
+        },
         // {
         //     uri: "pav.mokkano.ru"
         // },

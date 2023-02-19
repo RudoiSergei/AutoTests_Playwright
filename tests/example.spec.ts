@@ -52,74 +52,79 @@ mokkano.underDomains.forEach(element => {
     await page.goto('https://' + element.uri)
     await page.evaluate(()=> localStorage.setItem('city-popup-seen-at-entrance', 'true'))
     await page.reload();
+    const date = new Date()00
+    console.log(date.getUTCFullYear ());
+    
     // await sleep(10000)
     // переход в меню и добавление товара в корзину
     await page.locator("//a[@class='px-2 py-sm-2 pl-sm-0 pr-sm-4'][contains(.,'Дополнительно')]").click()
     await page.locator("(//span[contains(.,'В корзину')])[1]").click()
     await page.locator("//button[@class='v-small-basket-button v-btn v-small-basket-button-header v-custom v-ripple-button']").click()
-    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
-    // await page.locator("(//i[@class='fal fa-plus'])[2]").click()
     // await expect(page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[1]")).toBeVisible({ timeout: 2000 })
     const nameUser = "TECT"
     const phoneUser = "77777777777"
-    const commentUser = "Не готовить, тестовый заказ!"
-
-    await page.waitForTimeout(2000)    
-    await page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[1]").type(nameUser)
-    await page.waitForTimeout(2000)    
-    await expect(page.locator("//input[contains(@data-maska,'+7 (###) ###-##-##')]")).toBeVisible({ timeout: 2000 })
-    await page.locator("//input[contains(@data-maska,'+7 (###) ###-##-##')]").type(phoneUser)
-    await page.waitForTimeout(1000)    
+    const commentUser = "Не готовить, тестовый   заказ!"
+    await sleep(2000)
+    await page.waitForTimeout(1000)
+    await page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[1]").type(nameUser, { delay: 1300})
+    await page.waitForTimeout(1000)
+    await sleep(2000)
+    await page.locator("//input[contains(@data-maska,'+7 (###) ###-##-##')]").type(phoneUser, { delay: 500})
+    // await element.type('World', {delay: 100});
+    await sleep(2000)
     await page.locator("//label[@class='toggle-switcher-label'][contains(.,'Самовывоз')]").click()
     await page.locator("(//div[contains(@class,'v-self-service-terminal-item')])[1]").click()
-    await page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[6]").click()
-    await expect(page.locator('//*[@id="AsyncComponentWrapper.CartStepBlock.AsyncComponentWrapper.CartOrderTypeBlock.AsyncComponentWrapper.CartSelfServiceTerminals.AsyncComponentWrapper.CartCommentcomment"]/input')).toBeVisible({ timeout: 2000 })
-    await page.waitForTimeout(2000)    
-    await page.locator("//div[@id='AsyncComponentWrapper.CartStepBlock.AsyncComponentWrapper.CartOrderTypeBlock.AsyncComponentWrapper.CartSelfServiceTerminals.AsyncComponentWrapper.CartCommentcomment']//input[@class='v-form-control v-mb-small']").fill(commentUser)    
+    // await page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[6]").click()
+    // await expect(page.locator('//*[@id="AsyncComponentWrapper.CartStepBlock.AsyncComponentWrapper.CartOrderTypeBlock.AsyncComponentWrapper.CartSelfServiceTerminals.AsyncComponentWrapper.CartCommentcomment"]/input')).toBeVisible({ timeout: 2000 })
+    // await page.waitForTimeout(2000)
+    await page.waitForTimeout(1000)
+    await sleep(2000)
+    await page.locator("//div[@id='AsyncComponentWrapper.CartStepBlock.AsyncComponentWrapper.CartOrderTypeBlock.AsyncComponentWrapper.CartSelfServiceTerminals.AsyncComponentWrapper.CartCommentcomment']//input[@class='v-form-control v-mb-small']").type(commentUser, { delay: 800})    
     // await page.locator("//label[@class='toggle-switcher-label'][contains(.,'Ко времени')]").click()
     // await page.locator("//select[contains(@class,'v-day-select v-form-control')]").click()
     // await page.locator("//select[contains(@class,'v-day-select v-form-control')]").selectOption({ index: 1 })
     // await page.locator("//select[contains(@class,'v-hour-select v-form-control')]").selectOption({index: 1})
     // await page.locator("//select[@class='v-minute-select v-form-control']").selectOption({index: 1})
-    await page.waitForTimeout(1000)    
+    // await sleep(2000)
     await page.locator("//div[@class='v-payment-wrapper'][contains(.,'Картой при получении')]").click()
-    await page.waitForTimeout(1000)    
-      // await page.locator("//span[contains(.,'Оформить заказ')]").click()
-      
-      await page.waitForTimeout(10000)
-      const url =  element.uri
+    // await page.locator("//span[contains(.,'Оформить заказ')]").click()
+    // await page.waitForTimeout(10000)
+    await sleep(30000)
+    
+    const url =  element.uri
+    const thisURL = await page.url().includes('order/complete')
+    
+    if(thisURL) {
       await page.screenshot({ path: `Screenshot/${url}.png`, fullPage: true });
-      await page.waitForLoadState('domcontentloaded');
+      console.log('item 1');
+      
+    } else {
+      await sleep(30000)
+      await page.screenshot({ path: `Screenshot/${url}.png`, fullPage: true });
+      console.log('item 2');
+    }
   })
 }) 
-  
+
 // server.domains.forEach(element => {
-
-//   test (`Test shopping pickup ${element.domain}`, async ({page, context}) => {
+  
+  //   test (`Test shopping pickup ${element.domain}`, async ({page, context}) => {
     
-//     // Going to a domain
-//     await page.goto(Server.protocol + element.domain);
-//     await page.evaluate(() => sessionStorage.setItem('address-popup-seen-at-entrance','true'));
-//     await page.evaluate(()=> sessionStorage.setItem('show_unavaliable_terminal_message','true'));
-//     await page.waitForLoadState('domcontentloaded');
-//     if (element.cookies) {
-//       context.addCookies([{
-//         name: 'ssid443',
-//         value: '2dd1097b-e475-4f99-8468-d59845ffa46e',
-//         domain: element.domain,
-//         path: '/'
-//       }
-//       ]);
-//     };
-
+    //     // Going to a domain
+    //     await page.goto(Server.protocol + element.domain);
+    //     await page.evaluate(() => sessionStorage.setItem('address-popup-seen-at-entrance','true'));
+    //     await page.evaluate(()=> sessionStorage.setItem('show_unavaliable_terminal_message','true'));
+    //     await page.waitForLoadState('domcontentloaded');
+    //     if (element.cookies) {
+      //       context.addCookies([{
+        //         name: 'ssid443',
+        //         value: '2dd1097b-e475-4f99-8468-d59845ffa46e',
+        //         domain: element.domain,
+        //         path: '/'
+        //       }
+        //       ]);
+        //     };
+        
 //     await page.reload();
 //     // await page.waitForTimeout(1000);
 
