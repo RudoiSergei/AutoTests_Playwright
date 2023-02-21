@@ -2,7 +2,8 @@ type Domain = {
     domain: string,
     restaurantId: string,
     cookies: string,
-    linkProduct: string
+    linkProduct: string,
+    userPass: string
 }
 
 export class Server {
@@ -20,25 +21,28 @@ export class Server {
             //     cookies: "false",
             //     linkProduct: "(//span[@class='product-price'])[2]"
             // },
-            // {
-            //     domain: "vivatpizza.ru",
-            //     restaurantId: "31759fd3-68c7-42f4-ab9e-50936951725e",
-            //     cookies: "false",
-            //     linkProduct: "(//span[@class='product-price'])[2]"
-            // //  await page.locator("(//input[contains(@placeholder,'Введите промокод')])[2]").fill('test123');
-            // },
-            // {
-            //     domain: "oscocafe.ru",
-            //     restaurantId: "5dcf0864-0785-4af6-ba48-245a691960fd",
-            //     cookies: 'true',
-            //     linkProduct: "(//span[@class='product-price'])[2]"
-            // },
+            {
+                domain: "vivatpizza.ru",
+                restaurantId: "31759fd3-68c7-42f4-ab9e-50936951725e",
+                cookies: "false",
+                linkProduct: "(//span[@class='product-price'])[2]",
+                userPass: "939064"
+            //  await page.locator("(//input[contains(@placeholder,'Введите промокод')])[2]").fill('test123');
+            },
+            {
+                domain: "oscocafe.ru",
+                restaurantId: "5dcf0864-0785-4af6-ba48-245a691960fd",
+                cookies: 'true',
+                linkProduct: "(//span[@class='product-price'])[2]",
+                userPass: "479766"
+            },
             {
             //     // жадина говядина
                 domain: "xn--80aaaheedkue4cfj3v.xn--p1ai",
                 restaurantId: "5a79ac58-fd83-488d-ada6-95f06562aaba",
                 linkProduct: "(//span[@class='product-price'])[2]",
-                cookies: "false"
+                cookies: "false",
+                userPass: ""
             },
             // {
             //     domain: "deluxe.pizza",
