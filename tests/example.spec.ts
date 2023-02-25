@@ -6,58 +6,97 @@ const server = new Server()
 import { Mokkano } from '../sites/mokkano/underDomains';
 const mokkano = new Mokkano()
 // export const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+
 export async function sleep (ms: number) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-// проверка авторизации
-server.domains.forEach(element => {
-  test (`Test pop-up autorization ${element.domain}`, async ({page, context}) => {
-    // Going to a domain
-    await page.goto(Server.protocol + element.domain);
-    await page.evaluate(() => sessionStorage.setItem('address-popup-seen-at-entrance','true'));
-    await page.evaluate(()=> sessionStorage.setItem('show_unavaliable_terminal_message','true'));
-    await page.reload();
-    await page.waitForTimeout(1000);
-    // Open pop-up LogIn
-    await page.click('.v-login-button-text'); 
-    const inputPassword = expect (page.locator("//div[@class='v-login-input-label'][contains(.,'Пароль')]"));
-    if (inputPassword) {
-      //аутентифиуация по паролю
-      console.log("аутентифиуация по паролю");
-      await page.locator('//div[@class="v-login-wrapper-global"]//input[@type="tel"]').type('9991234567',  {delay: 500});
-      await page.locator('//div[@class="v-login-input-block"]//input[@type="text"]').type('939064', {delay: 500})
+// формирование месяца
+const date = new Date()
+const numberMonth = [
+  "Январь",
+  "Февраля",
+  "Марта",
+  "Апреля",
+  "Мая",
+  "Июня",
+  "Июля",
+  "Августа",
+  "Сентября",
+  "Октября",
+  "Ноября",
+  "Декабря"
+];
+const month = numberMonth[date.getMonth()]
+const dateNow = date.getDate() + '.' +  month  + '.' + date.getFullYear() + ' ' + date.getHours() + ":" + date.getMinutes()
 
-      // await page.locator("//input[@class='v-login-input v-login-input-no-limit']").fill(''); 
+
+// проверка авторизации
+// server.domains.forEach(element => {
+//   test (`Test pop-up autorization ${element.domain}`, async ({page, context}) => {
+//     // Going to a domain
+//     await page.goto(Server.protocol + element.domain);
+//     await page.evaluate(() => sessionStorage.setItem('address-popup-seen-at-entrance','true'));
+//     await page.evaluate(()=> sessionStorage.setItem('show_unavaliable_terminal_message','true'));
+//     await page.reload();
+//     await page.waitForTimeout(1000);
+//     // Open pop-up LogIn
+//     await page.click('.v-login-button-text'); 
+//     const inputPassword = expect (page.locator("//div[@class='v-login-input-label'][contains(.,'Пароль')]"));
+//     if (inputPassword) {
+//       //аутентифиуация по паролю
+//       console.log("аутентифиуация по паролю");
+//       await page.locator('//div[@class="v-login-wrapper-global"]//input[@type="tel"]').type('9991234567',  {delay: 500});
+//       await page.locator('//div[@class="v-login-input-block"]//input[@type="text"]').type('939064', {delay: 500})
+
+//       // await page.locator("//input[@class='v-login-input v-login-input-no-limit']").fill(''); 
       
-      //тут нужно дописать открытие нового браузера devino
+//       //тут нужно дописать открытие нового браузера devino
       
-      await page.locator('//div[@class="v-login-button-action-wrapper v-mb-small"]//button').click();
-      await sleep(10000)
-      // await page.locator("//i[@class='fal fa-times']").click();
-    } else {
-      //аутентифиуация по смс
-      console.log('аутентифиуация по смс');
-      await page.locator("//input[@placeholder='(   )    -  -  ']").fill("9991234567")
-      await page.locator('//div[@class="v-login-input-block"]//button[contains(.,"Запросить код")]').click();
-        await page.locator("//i[@class='fal fa-times']").click();
-      }
-  });
-});
+//       await page.locator('//div[@class="v-login-button-action-wrapper v-mb-small"]//button').click();
+//       await sleep(10000)
+//       // await page.locator("//i[@class='fal fa-times']").click();
+//     } else {
+//       //аутентифиуация по смс
+//       console.log('аутентифиуация по смс');
+//       await page.locator("//input[@placeholder='(   )    -  -  ']").fill("9991234567")
+//       await page.locator('//div[@class="v-login-input-block"]//button[contains(.,"Запросить код")]').click();
+//         await page.locator("//i[@class='fal fa-times']").click();
+//       }
+//   });
+// });
+
 
 
 // Проверка заказов самовывоз Моккано
 mokkano.underDomains.forEach(element => {
   test (`shop in Mokkano  ${element.uri}`, async({page, context}) => {
+    console.log(dateNow);
     await page.goto('https://' + element.uri)
+    
+    // Подкидывание local storage
     await page.evaluate(()=> localStorage.setItem('city-popup-seen-at-entrance', 'true'))
     await page.reload();
-    const date = new Date()
-    console.log(date.getUTCFullYear ());
+
+    // Запрос настроек ресторана
+    const requestApiVueSettings = await page.request.get('https://mokkano.ru/api/json/vue-settings?restaurant=' + element.restaurantId)
+    const responseApiVueSettings = await requestApiVueSettings.json()
+    console.log(responseApiVueSettings);
     
     // await sleep(10000)
+
     // переход в меню и добавление товара в корзину
-    await page.locator("//a[@class='px-2 py-sm-2 pl-sm-0 pr-sm-4'][contains(.,'Дополнительно')]").click()
+    await page.locator('//a[@class="px-2 py-sm-2 pl-sm-0 pr-sm-4"][contains(.,"Напитки")]').click()
+    
+    // цикл продуктов при условии что продукт в стоп листе
+    // const dd = expect (page.locator('//div[@class="product-list row mr-0 filterable-items"]//div[contains(@class,"col-xl-20")][1][contains(@class,"in-stop-list")]'))
+    // // const product = expect (page.locator('//div[@class="product-list row mr-0 filterable-items"]//div[contains(@class,"in-stop-list")][4]'))
+    // if (dd) {
+    //   console.log(1);
+    // } else {
+    //   console.log(2);
+    // }
+
     await page.locator("(//span[contains(.,'В корзину')])[1]").click()
     await page.locator("//button[@class='v-small-basket-button v-btn v-small-basket-button-header v-custom v-ripple-button']").click()
     // await expect(page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[1]")).toBeVisible({ timeout: 2000 })
@@ -86,16 +125,18 @@ mokkano.underDomains.forEach(element => {
     await page.locator("//div[@class='v-payment-wrapper'][contains(.,'Картой при получении')]").click()
     // await page.locator("//span[contains(.,'Оформить заказ')]").click()
     await sleep(30000)
+
+
     const url =  element.uri
     const thisURL = await page.url().includes('order/complete')
     
     if(thisURL) {
-      await page.screenshot({ path: `Screenshot/${url}.png`, fullPage: true });
+      await page.screenshot({ path: `Screenshot/${url} + ${dateNow}.png`, fullPage: true });
       console.log('item 1');
       
     } else {
       await sleep(30000)
-      await page.screenshot({ path: `Screenshot/${url}.png`, fullPage: true });
+      await page.screenshot({ path: `Screenshot/${url} + " " + ${dateNow}.png`, fullPage: true });
       console.log('item 2');
     }
   })
@@ -120,16 +161,16 @@ mokkano.underDomains.forEach(element => {
         //       ]);
         //     };
         
-//     await page.reload();
-//     // await page.waitForTimeout(1000);
-
-//     // получение vue-настроек
-//     const apiVueSettings = await page.request.get(Server.protocol + element.domain + '/api/json/vue-settings?restaurant=' + element.restaurantId);
-//     const restVueSettings = await apiVueSettings.json();
-//     // console.log(restVueSettings);
-
-//     //получение настроек терминала
-//     const apiTerminals = await page.request.get(Server.protocol + element.domain + "/api/json/cities?restaurant=" + element.restaurantId + "&hideIfInactive=true") 
+        //     await page.reload();
+        //     // await page.waitForTimeout(1000);
+        
+        //     // получение vue-настроек
+        //     const apiVueSettings = await page.request.get(Server.protocol + element.domain + '/api/json/vue-settings?restaurant=' + element.restaurantId);
+        //     const restVueSettings = await apiVueSettings.json();
+        //     // console.log(restVueSettings);
+        
+        //     //получение настроек терминала
+        //     const apiTerminals = await page.request.get(Server.protocol + element.domain + "/api/json/cities?restaurant=" + element.restaurantId + "&hideIfInactive=true") 
 //     const nameTerminals = await apiTerminals.json();
     
 //     if (nameTerminals.answer[0].TitleForGeocoding == "") {

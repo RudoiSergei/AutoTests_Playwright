@@ -1,7 +1,8 @@
 export class Mokkano {
     public underDomains = [
         {
-            uri: "mokkano.ru"
+            uri: "mokkano.ru",
+            restaurantId: "0468990a-08d0-46ce-ab59-3d4b820d5bb8",
         },
         // {
         //     uri: "pav.mokkano.ru"
@@ -15,9 +16,10 @@ export class Mokkano {
         // {
         //     uri: "egorievsk.mokkano.ru"
         // },
-        {
-            uri: "shatura.mokkano.ru"
-        },
+        // {
+        //     uri: "shatura.mokkano.ru",
+        //     restaurantId: "d7781cff-7240-46f6-b676-914e2a80bb67",
+        // },
         // {
         //     uri: "chehov.mokkano.ru"
         // },
