@@ -29,13 +29,13 @@ export class Server {
                 userPass: "939064"
             //  await page.locator("(//input[contains(@placeholder,'Введите промокод')])[2]").fill('test123');
             },
-            {
-                domain: "oscocafe.ru",
-                restaurantId: "5dcf0864-0785-4af6-ba48-245a691960fd",
-                cookies: 'true',
-                linkProduct: "(//span[@class='product-price'])[2]",
-                userPass: "479766"
-            },
+            // {
+            //     domain: "oscocafe.ru",
+            //     restaurantId: "5dcf0864-0785-4af6-ba48-245a691960fd",
+            //     cookies: 'true',
+            //     linkProduct: "(//span[@class='product-price'])[2]",
+            //     userPass: "479766"
+            // },
             {
             //     // жадина говядина
                 domain: "xn--80aaaheedkue4cfj3v.xn--p1ai",
