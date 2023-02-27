@@ -32,64 +32,73 @@ const dateNow = date.getDate() + '.' +  month  + '.' + date.getFullYear() + ' ' 
 
 
 // проверка авторизации
-// server.domains.forEach(element => {
-//   test (`Test pop-up autorization ${element.domain}`, async ({page, context}) => {
-//     // Going to a domain
-//     await page.goto(Server.protocol + element.domain);
-//     await page.evaluate(() => sessionStorage.setItem('address-popup-seen-at-entrance','true'));
-//     await page.evaluate(()=> sessionStorage.setItem('show_unavaliable_terminal_message','true'));
-//     await page.reload();
-//     await page.waitForTimeout(1000);
-//     // Open pop-up LogIn
-//     await page.click('.v-login-button-text'); 
-//     const inputPassword = expect (page.locator("//div[@class='v-login-input-label'][contains(.,'Пароль')]"));
-//     if (inputPassword) {
-//       //аутентифиуация по паролю
-//       console.log("аутентифиуация по паролю");
-//       await page.locator('//div[@class="v-login-wrapper-global"]//input[@type="tel"]').type('9991234567',  {delay: 500});
-//       await page.locator('//div[@class="v-login-input-block"]//input[@type="text"]').type('939064', {delay: 500})
+server.domains.forEach(element => {
+  test (`Test pop-up autorization ${element.domain}`, async ({page, context}) => {
+    // Going to a domain
+    await page.goto(Server.protocol + element.domain);
+    await page.evaluate(() => sessionStorage.setItem('address-popup-seen-at-entrance','true'));
+    await page.evaluate(()=> sessionStorage.setItem('show_unavaliable_terminal_message','true'));
+    await page.reload();
+    await page.waitForTimeout(1000);
+    await context.newPage()
+    const page2 = await context.newPage();
+    await page2.goto("https://my.devinotele.com/Message/StatisticsDetailed")
+    context.addCookies
+    page2.close()
+    
+      // Open pop-up LogIn
+    await page.click('.v-login-button-text'); 
+    const inputPassword = expect (page.locator("//div[@class='v-login-input-label'][contains(.,'Пароль')]"));
+    if (inputPassword) {
+      //аутентифиуация по паролю
+      console.log("аутентифиуация по паролю");
+      await page.locator('//div[@class="v-login-wrapper-global"]//input[@type="tel"]').type('9991234567',  {delay: 500});
+      await page.locator('//div[@class="v-login-input-block"]//input[@type="text"]').type('939064', {delay: 500})
 
-//       // await page.locator("//input[@class='v-login-input v-login-input-no-limit']").fill(''); 
+      await page.locator("//input[@class='v-login-input v-login-input-no-limit']").fill(''); 
       
-//       //тут нужно дописать открытие нового браузера devino
+      // тут нужно дописать открытие нового браузера devino
       
-//       await page.locator('//div[@class="v-login-button-action-wrapper v-mb-small"]//button').click();
-//       await sleep(10000)
-//       // await page.locator("//i[@class='fal fa-times']").click();
-//     } else {
-//       //аутентифиуация по смс
-//       console.log('аутентифиуация по смс');
-//       await page.locator("//input[@placeholder='(   )    -  -  ']").fill("9991234567")
-//       await page.locator('//div[@class="v-login-input-block"]//button[contains(.,"Запросить код")]').click();
-//         await page.locator("//i[@class='fal fa-times']").click();
-//       }
-//   });
-// });
+      await page.locator('//div[@class="v-login-button-action-wrapper v-mb-small"]//button').click();
+      await sleep(10000)
+      // await page.locator("//i[@class='fal fa-times']").click();
+    } else {
+      //аутентифиуация по смс
+      console.log('аутентифиуация по смс');
+      await page.locator("//input[@placeholder='(   )    -  -  ']").fill("9991234567")
+      await page.locator('//div[@class="v-login-input-block"]//button[contains(.,"Запросить код")]').click();
+        await page.locator("//i[@class='fal fa-times']").click();
+      }
+  });
+});
 
 
 
-// Проверка заказов самовывоз Моккано
+// Проверка заказа на самовывоз Моккано
 mokkano.underDomains.forEach(element => {
   test (`shop in Mokkano  ${element.uri}`, async({page, context}) => {
     console.log(dateNow);
     await page.goto('https://' + element.uri)
     
+
     // Подкидывание local storage
     await page.evaluate(()=> localStorage.setItem('city-popup-seen-at-entrance', 'true'))
     await page.reload();
 
     // Запрос настроек ресторана
-    const requestApiVueSettings = await page.request.get('https://mokkano.ru/api/json/vue-settings?restaurant=' + element.restaurantId)
-    const responseApiVueSettings = await requestApiVueSettings.json()
-    console.log(responseApiVueSettings);
+    // const requestApiVueSettings = await page.request.get('https://mokkano.ru/api/json/vue-settings?restaurant=' + element.restaurantId)
+    // const responseApiVueSettings = await requestApiVueSettings.json()
+    // console.log(responseApiVueSettings);
     
     // await sleep(10000)
 
     // переход в меню и добавление товара в корзину
     await page.locator('//a[@class="px-2 py-sm-2 pl-sm-0 pr-sm-4"][contains(.,"Напитки")]').click()
     
+    // await page.locator(`.products-list div[data-product="${avaibleProduct.getAttribute('data-product')}"]`).click()
+    
+    // const db = await page.locator('//div[@class="product-list row mr-0 filterable-items"]//div[contains(@class,"col-xl-20")][1][contains(@class,"in-stop-list")]')
     // цикл продуктов при условии что продукт в стоп листе
-    // const dd = expect (page.locator('//div[@class="product-list row mr-0 filterable-items"]//div[contains(@class,"col-xl-20")][1][contains(@class,"in-stop-list")]'))
     // // const product = expect (page.locator('//div[@class="product-list row mr-0 filterable-items"]//div[contains(@class,"in-stop-list")][4]'))
     // if (dd) {
     //   console.log(1);
@@ -97,7 +106,7 @@ mokkano.underDomains.forEach(element => {
     //   console.log(2);
     // }
 
-    await page.locator("(//span[contains(.,'В корзину')])[1]").click()
+    // await page.locator("(//span[contains(.,'В корзину')])[1]").click()
     await page.locator("//button[@class='v-small-basket-button v-btn v-small-basket-button-header v-custom v-ripple-button']").click()
     // await expect(page.locator("(//input[contains(@class,'v-form-control v-mb-small')])[1]")).toBeVisible({ timeout: 2000 })
     const nameUser = "TECT"
