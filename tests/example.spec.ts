@@ -13,20 +13,7 @@ export async function sleep (ms: number) {
 
 // формирование месяца
 const date = new Date()
-const numberMonth = [
-  "01",
-  "02",
-  "03",
-  "04",
-  "05",
-  "06",
-  "07",
-  "08",
-  "09",
-  "10",
-  "11",
-  "12"
-];
+const numberMonth = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
 const month = numberMonth[date.getMonth()]
 const dateNow = date.getDate() + '.' +  month  + '.' + date.getFullYear() + ' ' + date.getHours() + ":" + date.getMinutes()
 
