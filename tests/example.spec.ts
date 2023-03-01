@@ -19,67 +19,80 @@ const dateNow = date.getDate() + '.' +  month  + '.' + date.getFullYear() + ' ' 
 
 
 // проверка авторизации
-server.domains.forEach(element => {
-  test (`Test pop-up autorization ${element.domain}`, async ({page, context}) => {
-    // Going to a domain
-    console.log(dateNow + " - " +`${element.domain}`);
+// server.domains.forEach(element => {
+//   test (`Test pop-up autorization ${element.domain}`, async ({page, context}) => {
+//     // Going to a domain
+//     console.log(dateNow + " - " +`${element.domain}`);
     
-    await page.goto(Server.protocol + element.domain);
-    await page.evaluate(() => sessionStorage.setItem('address-popup-seen-at-entrance','true'));
-    await page.evaluate(()=> sessionStorage.setItem('show_unavaliable_terminal_message','true'));
-    await page.reload();
-    await page.waitForTimeout(1000);
+//     await page.goto(Server.protocol + element.domain);
+//     await page.evaluate(() => sessionStorage.setItem('address-popup-seen-at-entrance','true'));
+//     await page.evaluate(()=> sessionStorage.setItem('show_unavaliable_terminal_message','true'));
+//     await page.reload();
+//     await page.waitForTimeout(1000);
     
-    // Open pop-up LogIn
-    await page.click('.v-login-button-text'); 
 
-    const inputPassword = expect (page.locator("//div[@class='v-login-input-label'][contains(.,'Пароль')]"));
+    // Дописать api запрос на получение формы авторизации:
+    // 0 - авторизация по смс
+    // 1 - авторизация по парролю
+    // 2 - MCRM
+    // 3 - iikoCardBySms
+    // 4 - iikoCardByPass
 
-    if (inputPassword) {
-      //аутентифиуация по паролю
-      console.log("аутентифиуация по паролю");
-      await page.locator('//div[@class="v-login-wrapper-global"]//input[@type="tel"]').type('9991234567',  {delay: 500});
-      await page.locator('//div[@class="v-login-input-block"]//input[@type="text"]').type('939064', {delay: 500});
-      await page.locator('//div[@class="v-login-button-action-wrapper v-mb-small"][contains(.,"Войти")]').click(); 
-      await sleep(10000)
-      // await page.locator("//i[@class='fal fa-times']").click();
-    } 
-    //аутентифиуация по смс
-    else {
-        console.log('аутентифиуация по смс');
-        await page.locator("//input[@placeholder='(   )    -  -  ']").fill("9991234567")
-        await page.locator('//div[@class="v-login-input-block"]//button[contains(.,"Запросить код")]').click();
-        // открытие новой вкладки Devino
-        // test('Open new tab',async function() {})
+    // https://mokkano.ru/api/v2/json/restaurant/settings?restaurant=0468990a-08d0-46ce-ab59-3d4b820d5bb8
+    // AuthType
+    
+
+    
+//     // Open pop-up LogIn
+//     await page.click('.v-login-button-text'); 
+
+//     const inputPassword = expect (page.locator("//div[@class='v-login-input-label'][contains(.,'Пароль')]"));
+
+//     if (inputPassword) {
+//       //аутентифиуация по паролю
+//       console.log("аутентифиуация по паролю");
+//       await page.locator('//div[@class="v-login-wrapper-global"]//input[@type="tel"]').type('9991234567',  {delay: 500});
+//       await page.locator('//div[@class="v-login-input-block"]//input[@type="text"]').type('939064', {delay: 500});
+//       await page.locator('//div[@class="v-login-button-action-wrapper v-mb-small"][contains(.,"Войти")]').click(); 
+//       await sleep(10000)
+//       // await page.locator("//i[@class='fal fa-times']").click();
+//     } 
+//     //аутентифиуация по смс
+//     else {
+//         console.log('аутентифиуация по смс');
+//         await page.locator("//input[@placeholder='(   )    -  -  ']").fill("9991234567")
+//         await page.locator('//div[@class="v-login-input-block"]//button[contains(.,"Запросить код")]').click();
+//         // открытие новой вкладки Devino
+//         // test('Open new tab',async function() {})
         
-        // await context.newPage()
-        // const pageDevino = await context.newPage();
-        // await pageDevino.goto("https://my.devinotele.com/Message/StatisticsDetailed")
+//         // await context.newPage()
+//         // const pageDevino = await context.newPage();
+//         // await pageDevino.goto("https://my.devinotele.com/Message/StatisticsDetailed")
         
-        // // Подкивыние куков
-        // context.addCookies([{
-        //   name: '.AspNet.Theseus',
-        //   value: 'CfDJ8G38mSYR79hOlPcwOXCc4KLn2vAu0q1Mna4uVLPBCkpMIDKfTPGhSgAZDcIFzCNrn9uoz_eyR536f6_7sQY8uGRajR_jkOMt_hpsd7NLjsVOV3R9L6cE6wpXzR9n3zUYmAo3ZsUn1Szogud6wYlASE4bLetg9Pfl0eoEY7AMtINNUYuuAJM74EQv3lZ0QVjDt4aJ0pX3aJUqm59IB1ujPQgKmg8-xPggZcByBc_veB5mEtMbhZSKQEA7z_Cxf1EQqmU8aPfyfN2gbNmVMLbikTla0GvE3CclEHtCB_Tlx08peLUU5K-tXeGP4CAU9ZNa9Qt1XjD2TwWLvXDeNuibIZr7WMkT4ljXfuAYS5Tp64KX',
-        //   domain: 'my.devinotele.com',
-        //   path: '/'
-        // }]);
+//         // // Подкивыние куков
+//         // context.addCookies([{
+//         //   name: '.AspNet.Theseus',
+//         //   value: 'CfDJ8G38mSYR79hOlPcwOXCc4KLn2vAu0q1Mna4uVLPBCkpMIDKfTPGhSgAZDcIFzCNrn9uoz_eyR536f6_7sQY8uGRajR_jkOMt_hpsd7NLjsVOV3R9L6cE6wpXzR9n3zUYmAo3ZsUn1Szogud6wYlASE4bLetg9Pfl0eoEY7AMtINNUYuuAJM74EQv3lZ0QVjDt4aJ0pX3aJUqm59IB1ujPQgKmg8-xPggZcByBc_veB5mEtMbhZSKQEA7z_Cxf1EQqmU8aPfyfN2gbNmVMLbikTla0GvE3CclEHtCB_Tlx08peLUU5K-tXeGP4CAU9ZNa9Qt1XjD2TwWLvXDeNuibIZr7WMkT4ljXfuAYS5Tp64KX',
+//         //   domain: 'my.devinotele.com',
+//         //   path: '/'
+//         // }]);
         
-        // await pageDevino.reload()
-        // await page.locator("//span[contains(.,'за сегодня')]").click();
-        // await page.locator('//input[@name="destinationAddress"]').type("79991234567", {delay:100});
-        // await page.locator("//button[contains(.,'Показать')]").click();
+//         // await pageDevino.reload()
+//         // await page.locator("//span[contains(.,'за сегодня')]").click();
+//         // await page.locator('//input[@name="destinationAddress"]').type("79991234567", {delay:100});
+//         // await page.locator("//button[contains(.,'Показать')]").click();
         
-        // const loc = '//td[contains(.,"7")]'
-        // const loc2 = '//td[contains(.,"79991234567")]'
-        // if (loc2){
-        //   console.log('all ok');
-        // }
-        // await pageDevino.waitForTimeout(3000)
-        // await pageDevino.close()
-        await page.locator("//i[@class='fal fa-times']").click();
-      }
-    });
-});
+//         // const loc = '//td[contains(.,"7")]'
+//         // const loc2 = '//td[contains(.,"79991234567")]'
+//         // if (loc2){
+//         //   console.log('all ok');
+//         // }
+//         // await pageDevino.waitForTimeout(3000)
+//         // await pageDevino.close()
+//         await page.locator("//i[@class='fal fa-times']").click();
+//       }
+//     });
+// });
 
 
 
@@ -140,7 +153,7 @@ mokkano.underDomains.forEach(element => {
     // await page.locator("//select[@class='v-minute-select v-form-control']").selectOption({index: 1})
     // await sleep(2000)
     await page.locator("//div[@class='v-payment-wrapper'][contains(.,'Картой при получении')]").click()
-    // await page.locator("//span[contains(.,'Оформить заказ')]").click()
+    await page.locator("//span[contains(.,'Оформить заказ')]").click()
     await sleep(30000)
 
 
